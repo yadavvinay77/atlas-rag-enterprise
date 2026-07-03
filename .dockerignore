@@ -1,0 +1,14 @@
+.git
+.github
+.env
+.venv
+data
+.deepeval
+.pytest_cache
+.ruff_cache
+__pycache__
+*.pyc
+*.pdf
+project_*inventory.txt
+project_structure.txt
+

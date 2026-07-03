@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "enterprise-gujarati-rag"
+version = "0.2.0"
+description = "Interactive enterprise document RAG with upload, indexing, and cited Q&A"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.27,<1",
+  "numpy>=1.26,<3",
+  "pillow>=10.4,<13",
+  "pydantic>=2.8,<3",
+  "pydantic-settings>=2.4,<3",
+  "pymupdf>=1.24,<2",
+  "pytesseract>=0.3.13,<1",
+  "python-multipart>=0.0.20,<1",
+  "rank-bm25>=0.2.2,<1",
+  "typer>=0.12,<1",
+  "uvicorn[standard]>=0.30,<1",
+]
+
+[project.optional-dependencies]
+dense = [
+  "sentence-transformers>=3,<6",
+]
+eval = [
+  "deepeval>=4,<5",
+  "langsmith>=0.8,<1",
+  "ragas>=0.4,<1",
+  "trulens>=2,<3",
+]
+dev = [
+  "ipykernel>=6.29,<7",
+  "jupyterlab>=4.2,<5",
+  "pytest>=8.2,<9",
+  "ruff>=0.5,<1",
+]
+
+[project.scripts]
+enterprise-rag = "enterprise_rag.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/enterprise_rag"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

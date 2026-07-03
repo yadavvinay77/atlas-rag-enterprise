@@ -1,0 +1,40 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Runtime data, uploaded documents, indexes, and evaluator state
+data/
+.deepeval/
+*.pdf
+*.faiss
+*.index
+
+# Notebook and editor state
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Generated local reports
+project_clean_inventory.txt
+project_code_inventory.txt
+project_structure.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
