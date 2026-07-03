@@ -128,12 +128,3 @@ a pull request. Release versions are recorded in `pyproject.toml` and
 | Evaluation | Recall, MRR, citation coverage | Golden set, LLM judges, regression gates |
 | Operations | FastAPI, structured logs | SSO/RBAC, audit trail, tracing, dashboards |
 
-## What to discuss in an interview
-
-- Native extraction is rejected when text is empty or appears legacy-encoded.
-- OCR provenance is retained per page; low-quality pages are auditable.
-- Child chunks retrieve precisely while parent/page metadata preserves context.
-- Hybrid retrieval uses Reciprocal Rank Fusion instead of incomparable raw scores.
-- Answers are citation-first and abstain when evidence is weak.
-- The evaluation set is bilingual so Gujarati and English queries must retrieve
-  the same authoritative passages.
