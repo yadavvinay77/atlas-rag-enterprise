@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "enterprise-gujarati-rag"
-version = "0.2.0"
-description = "Interactive enterprise document RAG with upload, indexing, and cited Q&A"
+name = "enterprise-agentic-rag"
+version = "0.3.0"
+description = "Enterprise agentic RAG with document ingestion, cited Q&A, validation, and approval traces"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

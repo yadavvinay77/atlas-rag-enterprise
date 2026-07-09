@@ -18,6 +18,7 @@ def architecture_report() -> ArchitectureReport:
             "reranking": "Heuristic reranking + MMR; cross-encoder reranking is planned",
             "context": "Top-K cited passages with source/page metadata",
             "reasoning": "Conversation memory + selectable grounded synthesis provider",
+            "agentic_orchestration": "Planner, router, retrieval, validation, and human-approval policy agents",
             "llm": f"{settings.generation_provider}: {settings.ollama_model}",
             "evaluation": "Per-answer proxy metrics + gold-set hooks",
         },
@@ -60,7 +61,7 @@ def architecture_report() -> ArchitectureReport:
                     method("Hybrid", hybrid_status, "RRF fusion is active when dense retrieval is enabled."),
                     method("MMR", "active", "Maximal Marginal Relevance reduces repeated/near-duplicate chunks in final Top-K."),
                     method("Multi-Query", "active-lite", "Follow-up questions are rewritten with topic memory and medical synonym expansion."),
-                    method("Agentic", "planned", "Future router can choose search, summarize, compare, or evaluate tools."),
+                    method("Agentic", "active", "Router agent selects focused Q&A or multi-document routes before retrieval."),
                 ],
             ),
             ArchitectureLayer(
@@ -83,9 +84,9 @@ def architecture_report() -> ArchitectureReport:
             ArchitectureLayer(
                 layer="9. Reasoning",
                 methods=[
-                    method("ReAct", "planned", "Tool-using reasoning loop is not active yet."),
-                    method("Reflection", "available-lite", "Evaluation metrics expose answer risk; LLM self-check can be added."),
-                    method("Multi-Agent", "planned", "Future roles: retriever, verifier, medical safety reviewer."),
+                    method("ReAct", "available-lite", "The agent trace exposes tool-like planning, retrieval, validation, and approval steps."),
+                    method("Reflection", "active", "Validation agent reflects on groundedness, citation support, and hallucination risk."),
+                    method("Multi-Agent", "active", "Planner, router, memory, retrieval, validation, and human approval agents run for each answer."),
                 ],
             ),
             ArchitectureLayer(

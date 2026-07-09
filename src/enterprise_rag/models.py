@@ -56,6 +56,7 @@ class Answer(BaseModel):
     generation_note: str | None = None
     evaluation: "AnswerEvaluation | None" = None
     pipeline_trace: dict[str, object] = Field(default_factory=dict)
+    agent_trace: "AgentTrace | None" = None
 
 
 class ConversationTurn(BaseModel):
@@ -120,6 +121,25 @@ class EvaluationProviderInfo(BaseModel):
     best_for: str
     required_setup: str
     active: bool = False
+
+
+class AgentStep(BaseModel):
+    agent: str
+    action: str
+    status: str
+    rationale: str
+
+
+class AgentTrace(BaseModel):
+    run_id: str
+    intent: str
+    route: str
+    retrieval_query: str
+    approval_required: bool = False
+    approval_reason: str | None = None
+    validation_status: str = "not-run"
+    validation_score: float = 0.0
+    steps: list[AgentStep] = Field(default_factory=list)
 
 
 class ArchitectureMethod(BaseModel):

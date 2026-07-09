@@ -9,6 +9,12 @@ from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 from .architecture import architecture_report
+from .agents import (
+    plan_agent,
+    record_approval_agent,
+    record_retrieval_agent,
+    record_validation_agent,
+)
 from .config import settings
 from .evaluation import evaluate_answer
 from .evaluation_providers import provider_catalog
@@ -22,7 +28,7 @@ from .indexing import (
     remove_document_from_index,
 )
 from .io import read_jsonl
-from .memory import contextualize_question, conversations, should_use_conversation_context
+from .memory import conversations, should_use_conversation_context
 from .models import (
     Answer,
     ArchitectureReport,
@@ -246,6 +252,12 @@ def architecture() -> ArchitectureReport:
     return architecture_report()
 
 
+@app.post("/api/agent/plan")
+def agent_plan(request: AskRequest):
+    conversation_id = conversations.create_or_get(request.conversation_id)
+    return plan_agent(request.question, conversations.turns(conversation_id))
+
+
 @app.get("/api/evaluators", response_model=list[EvaluationProviderInfo])
 def evaluators() -> list[EvaluationProviderInfo]:
     return provider_catalog()
@@ -339,8 +351,9 @@ def ask(q: str = Query(min_length=2), top_k: int = Query(8, ge=1, le=20)) -> Ans
 def ask_verified(request: AskRequest) -> Answer:
     conversation_id = conversations.create_or_get(request.conversation_id)
     history = conversations.turns(conversation_id)
+    agent_trace = plan_agent(request.question, history)
     used_conversation_context = should_use_conversation_context(request.question, history)
-    retrieval_query = contextualize_question(request.question, history)
+    retrieval_query = agent_trace.retrieval_query
     preferred_document_ids = (
         {
             document_id
@@ -356,6 +369,7 @@ def ask_verified(request: AskRequest) -> Answer:
         preferred_document_ids=preferred_document_ids,
     )
     hits = attach_visuals(hits)
+    agent_trace = record_retrieval_agent(agent_trace, hits)
     generation_provider = (request.generation_provider or settings.generation_provider).lower()
     generation_model = request.generation_model
     if not request.generate or generation_provider == "extractive":
@@ -425,6 +439,14 @@ def ask_verified(request: AskRequest) -> Answer:
         hits=hits,
         run_native_evaluators=request.run_native_evaluators,
     )
+    agent_trace = record_validation_agent(
+        agent_trace,
+        question=request.question,
+        answer=answer,
+        hits=hits,
+        run_native_evaluators=request.run_native_evaluators,
+    )
+    answer.agent_trace = record_approval_agent(agent_trace, request.question, answer)
     answer.pipeline_trace = _build_pipeline_trace(
         request=request,
         retrieval_query=retrieval_query,

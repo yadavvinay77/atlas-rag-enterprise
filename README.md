@@ -1,13 +1,15 @@
-# Atlas Enterprise Document RAG
+# Enterprise Agentic RAG
 
 [![CI](https://github.com/yadavvinay77/atlas-rag-enterprise/actions/workflows/ci.yml/badge.svg)](https://github.com/yadavvinay77/atlas-rag-enterprise/actions/workflows/ci.yml)
 [![Container](https://github.com/yadavvinay77/atlas-rag-enterprise/actions/workflows/cd.yml/badge.svg)](https://github.com/yadavvinay77/atlas-rag-enterprise/actions/workflows/cd.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
 
-A portfolio-grade document RAG workspace with PDF upload, local-path ingestion,
-background progress, multi-document indexing, cited Q&A, and optional Ollama
-generation. It supports both scanned multilingual government records and large
-text-native references such as `CURRENT Medical Diagnosis & Treatment 2026`.
+A portfolio-grade enterprise RAG platform with deterministic agent orchestration,
+PDF upload, local-path ingestion, background progress, multi-document indexing,
+cited Q&A, answer validation, human-approval policy flags, and optional Ollama or
+OpenAI-compatible generation. It supports both scanned multilingual government
+records and large text-native references such as `CURRENT Medical Diagnosis &
+Treatment 2026`.
 
 ## Why not notebook-only?
 
@@ -29,10 +31,28 @@ flowchart LR
     F --> H[Multilingual dense index]
     G --> I[RRF fusion]
     H --> I
-    I --> J[Citation context builder]
-    J --> K[Grounded answer]
-    K --> L[Evaluation and traces]
+    I --> J[Planner + Router Agents]
+    J --> K[Citation context builder]
+    K --> L[Grounded answer]
+    L --> M[Validation Agent]
+    M --> N[Human Approval Node]
 ```
+
+## Agentic workflow
+
+Every `/api/ask` request returns an `agent_trace` with the operational path:
+
+1. Planner Agent classifies the user intent as answer, summarize, compare,
+   evaluate, or follow-up.
+2. Router Agent selects focused Q&A or multi-document retrieval.
+3. Memory Agent rewrites context-dependent follow-ups only when useful.
+4. Retrieval Agent records cited passages and source diversity.
+5. Validation Agent scores groundedness, citation support, and hallucination
+   risk.
+6. Human Approval Node flags medical/treatment questions, abstentions, or low
+   validation scores.
+
+Use `POST /api/agent/plan` to inspect the plan without running retrieval.
 
 ## Quick start
 
