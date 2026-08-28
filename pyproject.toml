@@ -25,7 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dense = [
-  "sentence-transformers>=3,<6",
+  "sentence-transformers>=3,<7",
 ]
 eval = [
   "deepeval>=4,<5",
@@ -34,9 +34,9 @@ eval = [
   "trulens>=2,<3",
 ]
 dev = [
-  "ipykernel>=6.29,<7",
+  "ipykernel>=6.29,<8",
   "jupyterlab>=4.2,<5",
-  "pytest>=8.2,<9",
+  "pytest>=8.2,<10",
   "ruff>=0.5,<1",
 ]
 
